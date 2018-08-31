@@ -1,0 +1,35 @@
+1.读文件
+Text
+from urllib.request import urlopen
+textPage = urlopen('http://x/x/test.txt')
+print(textPage.read())
+#print(str(textPage.read(), 'utf-8')) #指定编码格格式
+-----------------------
+html = urlopen('http://en.wikipedia.org/wiki/Python_(programming_language)')
+bs = BeautifulSoup(html, 'html.parser')
+content = bs.find('div', {'id':'mw-content-text'}).get_text()
+content = bytes(content, 'UTF-8')
+content = content.decode('UTF-8')
+
+-----------------------
+from urllib.request import urlopen
+from io import StringIO
+import csv
+
+data = urlopen('http://pythonscraping.com/files/MontyPythonAlbums.csv').read().decode('ascii', 'ignore')
+dataFile = StringIO(data) #StringIO像文件一样读写字符串buffer（内存文件）
+csvReader = csv.reader(dataFile)
+
+for row in csvReader:
+    print(row)
+-----以字典格式显示---
+from urllib.request import urlopen
+from io import StringIO
+import csv
+
+data = urlopen('http://pythonscraping.com/files/MontyPythonAlbums.csv').read().decode('ascii', 'ignore')
+dataFile = StringIO(data)
+dictReader = csv.DictReader(dataFile)
+print(dictReader.fieldnames)  #csv第一行（标题行）
+for row in dictReader:
+    print(row)
