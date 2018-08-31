@@ -1,4 +1,12 @@
-1.读文件
+1.抓取并存储到text
+html = urlopen('http://en.wikipedia.org/wiki/Python_(programming_language)')
+bs = BeautifulSoup(html, 'html.parser')
+content = bs.find('div', {'id': 'mw-content-text'}).get_text()
+
+with open('wiki2.txt', 'w+', encoding='utf-8') as f: #打开文件，并指定编码格式
+    for i in content:
+        f.write(i)
+2.读文件
 Text
 from urllib.request import urlopen
 textPage = urlopen('http://x/x/test.txt')
