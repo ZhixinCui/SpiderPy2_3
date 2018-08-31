@@ -41,3 +41,50 @@ dictReader = csv.DictReader(dataFile)
 print(dictReader.fieldnames)  #csv第一行（标题行）
 for row in dictReader:
     print(row)
+3. 2分词
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+from collections import Counter
+
+import re
+import string
+
+
+def clenSentence(sentence):
+    sentence = sentence.split(' ')
+    sentence = [word.strip(string.punctuation+string.whitespace) for word in sentence]
+    sentence = [word for word in sentence if len(word) > 1 or (word.lower() == 'a' or word.lower() == 'i')]
+    return sentence
+
+
+def cleanInput(content):
+    content = content.upper()
+    content = re.sub('\n', ' ', content)
+    content = bytes(content, "UTF-8")
+    content = content.decode("ascii", "ignore")
+    sentences = content.split('. ')
+    return [clenSentence(sentence) for sentence in sentences]
+
+def getNgramsFromSentence(content, n):
+    output = []
+    for i in range(len(content)-n+1):
+        output.append(content[i:i+n])
+    return output
+
+
+def getNgrams(content, n):
+    content = cleanInput(content)
+    ngrams = Counter()
+    ngrams_list = []
+    for sentence in content:
+        newNgrams = [' '.join(ngram) for ngram in getNgramsFromSentence(sentence, 2)]
+        ngrams_list.extend(newNgrams)
+        ngrams.update(newNgrams)
+    return(ngrams)
+
+
+content = str(urlopen('http://pythonscraping.com/files/inaugurationSpeech.txt').read(), 'utf-8')
+# with open('speech_cleanI.txt', 'w') as f:
+#     f.write(str(cleanInput(content)))
+ngrams = getNgrams(content, 2)
+print(ngrams)
